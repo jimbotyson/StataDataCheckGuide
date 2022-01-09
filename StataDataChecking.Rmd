@@ -3,10 +3,10 @@ title: "Data Preparation and Management with Stata"
 author: "Jim Tyson"
 date: "24/01/2020"
 output:
+  word_document:
+    toc: yes
   html_document:
     df_print: paged
-    toc: yes
-  word_document:
     toc: yes
   pdf_document:
     toc: yes
@@ -74,9 +74,9 @@ The raw data can be in a number of formats. If possible a plain text delimited f
 3.  if your data is plain text, you can use almost any tool in preparation;
 4.  you can share data even if your collaborators don't use Stata.
 
-Cleaned data sets should only be stored temporarily - arguably not at all. The raw data file should be treated as read only. Your initiation script might clean and transform your data, producing a data set fit for analysis. Ideally this data set should not be saved - you call the analysis script over the data set in memory after its transformation. You can call an R script from **within** an R script using a command like
+Cleaned data sets should only be stored temporarily - arguably not at all. The raw data file should be treated as read only. Your initiation script might clean and transform your data, producing a data set fit for analysis. Ideally this data set should not be saved - you call the analysis script over the data set in memory after its transformation. You can call a do file from **within** an do file script using a command like
 
-    source("C:/Users/ccaajim/Documents/R/MyScript.R")
+    do myscriptfilename
 
 but of course change the path and file name to match your set-up.
 

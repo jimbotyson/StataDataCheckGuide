@@ -308,8 +308,8 @@ pre code {
 <li>if your data is plain text, you can use almost any tool in preparation;</li>
 <li>you can share data even if your collaborators don’t use Stata.</li>
 </ol>
-<p>Cleaned data sets should only be stored temporarily - arguably not at all. The raw data file should be treated as read only. Your initiation script might clean and transform your data, producing a data set fit for analysis. Ideally this data set should not be saved - you call the analysis script over the data set in memory after its transformation. You can call an R script from <strong>within</strong> an R script using a command like</p>
-<pre><code>source(&quot;C:/Users/ccaajim/Documents/R/MyScript.R&quot;)</code></pre>
+<p>Cleaned data sets should only be stored temporarily - arguably not at all. The raw data file should be treated as read only. Your initiation script might clean and transform your data, producing a data set fit for analysis. Ideally this data set should not be saved - you call the analysis script over the data set in memory after its transformation. You can call a do file from <strong>within</strong> an do file script using a command like</p>
+<pre><code>do myscriptfilename</code></pre>
 <p>but of course change the path and file name to match your set-up.</p>
 <p>A good alternative to creating and saving transformed data files locally is to use Stata’s <code>preserve</code> command before doing any data transformation and analysis (this snapshots the pre-transformation state of the data) and use <code>restore</code> after analysis (which will undo any transformations or alterations to the original data set).</p>
 <p>In some circumstances you may decide to create a file and use it temporarily. It is strongly recommended that you either:</p>
