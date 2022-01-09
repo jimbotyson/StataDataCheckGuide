@@ -387,9 +387,9 @@ The data contains six variables. If we use `describe` we get:
 | english  | byte  | %8.0g |
 | history  | byte  | %8.0g |
 
-Sorted by:
+`Sorted by:`
 
-\> Note: Dataset has changed since last saved.
+`> Note: Dataset has changed since last saved.`
 
 You can quickly check the variable names, types, labels and so on in this way. To get a summary of your variables use `list` after this describe operation.
 
@@ -515,7 +515,7 @@ So we will write a do file to generate a new variable to act as our semaphore - 
 
 We will exploit the inbuilt Stata function **inrange()** which has this syntax:
 
-inrange(myvar, minimum, maximum)
+`inrange(myvar, minimum, maximum)`
 
 This function returns true when `myvar` is between the minimum and maximum values. So the code might look like this:
 
@@ -650,29 +650,29 @@ If your data has codes for missing values before you import it, then you can use
 
 You can use a command like:
 
-replace myvar = .a if myvar == -99 replace myvar = .b if myvar == -98 replace myvar = .c if myvar == -97
+`replace myvar = .a if myvar == -99 replace myvar = .b if myvar == -98 replace myvar = .c if myvar == -97`
 
 and then apply a label set like
 
-label define formissing .a "MCAR" .b "MAR" .c "MNAR"
+`label define formissing .a "MCAR" .b "MAR" .c "MNAR"`
 
 and finally apply the set of labels **formissing** to your variable:
 
-label values myvar formissing
+`label values myvar formissing`
 
 This method works, but you will have to do it a single variable at a time (or use a foreach loop). Perhaps better is to use the command `mvdecode` like this
 
-mvdecode myvarone myvartwo, mv(-99 = .a  -98 = .b  -97 = .c)
+`mvdecode myvarone myvartwo, mv(-99 = .a  -98 = .b  -97 = .c)`
 
 So encoding two variables in one instruction. Indeed if your missing value code scheme is uniform across variables you can use the construct **\_all** to simply apply the encoding to all variables in the data.
 
-mvencode \_all, mv(-99 = .a  -98 = .b  -97 = .c)
+`mvencode _all, mv(-99 = .a  -98 = .b  -97 = .c)`
 
 While a few missing values may not critically impact on your analysis and may allow for simply dropping cases, it will be worthwhile thinking about how to encode missing values. Not only because incomplete data may require special handling, but also because data maybe missing for different reasons. Consider for example a survey that asks respondents for their date of birth: no answer is very different from an answer 'unknown'.
 
 Supposing that you wish to exclude all missing values from some procedure (maybe a plot, for example), then you can use a comparison operator like
 
-if myvar \>= .
+`if myvar >= .`
 
 ## Outliers
 
@@ -680,25 +680,31 @@ We should remember that an outlier is not an error, nor even a 'bad' data point.
 
 Let us assume for the moment Tukey's 1977 characterisation of an outlier: a value beyond the whiskers, where the upper whisker is at $$quartile \: 3 + 1.5\times{IQR}$$ and the lower is at $$quartile \: 1 + 1.5\times{IQR}$$.
 
-tabstat maths, statistics(p25 p50 p75 iqr) save
+`tabstat maths, statistics(p25 p50 p75 iqr) save`
 
-matrix statsc=r(StatTotal)
+`matrix statsc=r(StatTotal)`
 
-local p75 = statsc[3,1] local p25 = statsc[1,1] local IQR = statsc[4,1] disp `p75'     disp`IQR'
+`local p75 = statsc[3,1] local p25 = statsc[1,1] local IQR = statsc[4,1] disp p75'     dispIQR'`
 
-local upperwhisker = `p75' + 1.5*`IQR' local lowerwhisker = `p25' - 1.5*`IQR'
+`local upperwhisker = p75' + 1.5*IQR' local lowerwhisker = p25' - 1.5*IQR'`
 
-disp `upperwhisker'     disp`lowerwhisker'
+`disp upperwhisker'     displowerwhisker'`
 
-list surname maths if maths \>= `upperwhisker'     list surname maths if maths <=`lowerwhisker'
+`list surname maths if maths >= upperwhisker'     list surname maths if maths <=lowerwhisker'`
 
-But it is very important not to rely on the output of this (or any other computation of extreme values) automatically. It is critical that you consider carefully what constitutes and extreme or otherwise curious value and decide what to do about them. Graphical approaches such as scatter and box plots are often more conducive to understanding the data.
+But it is very important not to rely on the output of this (or any other computation of extreme values) automatically. It is critical that you consider carefully what constitutes an extreme or otherwise interesting value and decide what to do about them. Graphical approaches such as scatter and box plots are often more conducive to understanding the data.
 
 Notice also that this only detects univariate outliers - you can have combinations of values for a case that together make the case of interest or problematic and this procedure would not detect those.
 
 With small data samples and a bi-variate relationship, it can be useful to create a scatter plot, run a regression analysis and then examine the leverage against residuals plot. So,
 
-scattery x y reg y x gen id=\_n lvr2plot, mlabel(id)
+`scattery x y`
+
+`reg y x`
+
+`gen id=_n`
+
+`lvr2plot, mlabel(id)`
 
 This allows us to consider any outliers and their effect.
 
@@ -710,7 +716,7 @@ The simplest uniqueness constraint can be illustrated by considering records tha
 
 Look at **contract** in Stata help. <!-- amend results data to contain an id field with duplicates and check with contract surname -->
 
-contract varlist if in weight , options
+`contract varlist if in weight , options`
 
 contract replaces the dataset in memory with a new dataset consisting of all combinations of varlist that exist in the data and a new variable that contains the frequency of each combination.
 
@@ -740,21 +746,21 @@ Let's take a simple example. Look at the head of our original data:
 
 Suppose that you would like too calculate for each student a measure of their overall examination performance. We can calculate the average score as
 
-(maths + english + history)/3
+`(maths + english + history)/3`
 
 These sorts of summaries of data **by case** (rather than by variable) are better created with egen.
 
 First, creating the average examination score for each student.
 
-egen avxm = rowmean(maths english history)
+`egen avxm = rowmean(maths english history)`
 
 Now, use **cut** to break this into groups of scores. I have chosen groups as from zero to less than 50, from 50 to less than 60 and from 60 and above. The `icodes` keyword creates numeric code names (starting at 0) for each resulting group:
 
-egen stream = cut(avxm), at(0,50,60,101) icodes
+`egen stream = cut(avxm), at(0,50,60,101) icodes`
 
 To check that the result is correct we can run this line:
 
-table stream, contents(min avxm max avxm)
+`table stream, contents(min avxm max avxm)`
 
 which will show us the lowest and highest data points in each group for our data.
 
@@ -772,7 +778,7 @@ Any other true date representation is a formatting of this representation.
 
 This means that data you import into Stata which might look like, for example
 
-20-12-2022
+`20-12-2022`
 
 may not be correctly recognised as a date by Stata.
 
@@ -780,11 +786,11 @@ There are Stata functions to convert dates to elapsed dates and to format dates.
 
 Let's imagine a file of data that looks like this:
 
-dateone datetwo 01-01-2000 01-02-2000 02-03-2001 02-03-2005 01-01-2000 01-01-1960
+`dateone datetwo 01-01-2000 01-02-2000 02-03-2001 02-03-2005 01-01-2000 01-01-1960`
 
 First, I will assume that the data are in two columns of a table in a single Excel worksheet and import them with this command:
 
-import excel <https://www.ucl.ac.uk/~ccaajim/datesstataexample.xlsx>, firstrow
+`import excel https://www.ucl.ac.uk/~ccaajim/datesstataexample.xlsx, firstrow`
 
 (You can use this command if you want to grab this small sheet from my website).
 
@@ -794,7 +800,7 @@ Now, how has Stata recognised the data? Here is the output of `desc`
 
 The display format And now, let's try some simple mathematics with these dates:
 
-gen interval = datetwo - dateone
+`gen interval = datetwo - dateone`
 
 Stat creates a variable of type `float`, with format `%9.0g`.
 
@@ -822,7 +828,11 @@ From any date variable, you can extract the *month*, *day* and *year* elements w
 
 For example,
 
-gen yearalone = year(date1) gen dayalone = day(date1) gen monthalone = month(date1)
+`gen yearalone = year(date1)`
+
+`gen dayalone = day(date1)`
+
+`gen monthalone = month(date1)`
 
 # Exporting tables to Office or LaTeX format from scripts
 
