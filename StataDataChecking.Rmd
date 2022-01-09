@@ -451,7 +451,7 @@ You should also be aware that storing a value with **more space** than required 
 
 with myvar having type float, you risk a wrong result.
 
-The most basic command for type checking in Stata is `ds` with the option `detail`. This will return a list of variables in your data and their current storage types. For example:
+Another basic command for type checking in Stata is `ds` with the option `detail`. This will return a list of variables in your data and their current storage types. The output is substantially the same as `describe, replace`. For example:
 
     . ds, detail
 
