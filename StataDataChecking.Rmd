@@ -41,7 +41,7 @@ In some code examples, I use a dummy name for a variable: `myvar`. If more than 
 
 When I first learned Stata, from great teachers, every learning opportunity concentrated on performing and interpreting some statistical test or creating and interpreting a model. And we created a few graphs.
 
-When I left the classroom and began using Stata 'in anger' (as one so often does), I discovered that if my data were not presented to me in a nice, clean, consistent, property classified and well labelled form, I would need to spend a long time, sometimes hours, diagnosing what was causing me trouble and working out how to fix it.
+When I left the classroom and began using Stata 'in anger' (as one so often does), I discovered that if my data were not presented to me in a nice, clean, consistent, properly classified and well labeled form, I would need to spend a long time, sometimes hours, diagnosing what was causing me trouble and working out how to fix it.
 
 This is my contribution to saving other data analysts from that pain.
 
