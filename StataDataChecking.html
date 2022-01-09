@@ -250,6 +250,7 @@ pre code {
 <li><a href="#converting-strings-to-dates">Converting strings to dates</a></li>
 <li><a href="#extracting-parts-of-dates">Extracting parts of dates</a></li>
 </ul></li>
+<li><a href="#exporting-tables-to-office-or-latex-format-from-scripts">Exporting tables to Office or LaTeX format from scripts</a></li>
 <li><a href="#references">References</a></li>
 </ul>
 </div>
@@ -1274,6 +1275,17 @@ other</code></pre>
 <p>For example,</p>
 <p>gen yearalone = year(date1) gen dayalone = day(date1) gen monthalone = month(date1)</p>
 </div>
+</div>
+<div id="exporting-tables-to-office-or-latex-format-from-scripts" class="section level1">
+<h1>Exporting tables to Office or LaTeX format from scripts</h1>
+<p>Dynamic reporting using <code>dyndoc</code> or <code>markstat</code> is a great way to work with Stata. However, not everyone wants to take on the whole workflow of producing documents programmatically, it is useful to have a script that analyses your data and exports tables of results as you go.</p>
+<p>One of the simplest ways to do this is to use <code>collect export</code> in your scripts after you run a routine. Suppose that you create a simple cross tabulation, for example</p>
+<pre><code>tabulate teacher class</code></pre>
+<p>You can immediately export the result to excel with</p>
+<pre><code>collect export teacherclass.xls</code></pre>
+<p>will create an Excel file with the results of tabulate. You can use .docx, .html, .tex and .pdf files (see the Stata documentation for the full list) as well as .xls(x).</p>
+<p>Unfortunately, it is not possible to append all your outputs to one file with <code>collect export</code> (it is allowed for some formats but not others), nor can you label the ouput easily.</p>
+<p>A more sophisticated method which allows you to label the exported content and collect all ouput in one document uses the <code>putdocx</code> or <code>putexcel</code>. Since this is outside the central topic of this guide (ie data management), an example do file that illustrates the process is provided in <code>putdocxexample.do</code>.</p>
 </div>
 <div id="references" class="section level1 unnumbered">
 <h1 class="unnumbered">References</h1>

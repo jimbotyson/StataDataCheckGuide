@@ -3,10 +3,10 @@ title: "Data Preparation and Management with Stata"
 author: "Jim Tyson"
 date: "24/01/2020"
 output:
+  word_document:
+    toc: yes
   html_document:
     df_print: paged
-    toc: yes
-  word_document:
     toc: yes
   pdf_document:
     toc: yes
@@ -826,9 +826,9 @@ gen yearalone = year(date1) gen dayalone = day(date1) gen monthalone = month(dat
 
 # Exporting tables to Office or LaTeX format from scripts
 
-Dynamic reporting using `dyndoc` or `markstat` is a great way to work with Stata. However, not everyone wants to and there are times when it is useful to have a script that analyses your data and exports tables of results as you go.
+Dynamic reporting using `dyndoc` or `markstat` is a great way to work with Stata. However, not everyone wants to take on the whole workflow of producing documents programmatically, it is useful to have a script that analyses your data and exports tables of results as you go.
 
-One of the simples ways to do this is to use `collect export` in your scripts after you run a routine. Suppose that you create a simple cross tabulation, for example
+One of the simplest ways to do this is to use `collect export` in your scripts after you run a routine. Suppose that you create a simple cross tabulation, for example
 
     tabulate teacher class
 
