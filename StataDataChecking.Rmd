@@ -3,10 +3,10 @@ title: "Data Preparation and Management with Stata"
 author: "Jim Tyson"
 date: "24/01/2020"
 output:
-  word_document:
-    toc: yes
   html_document:
     df_print: paged
+    toc: yes
+  word_document:
     toc: yes
   pdf_document:
     toc: yes
@@ -485,7 +485,7 @@ You can also use `ds, has(format %8.0g)` (or indeed any format type) to check fo
 
 #### Destring and back again
 
-Data may not always be read in to Stata correctly. If after checking you have a variable which should be numeric but is stored as a string, you have have to convert if. The command to convert from string to numeric has this format
+Data may not always be read in to Stata correctly. If after checking you have a variable which should be numeric but is stored as a string, you have to convert if. The command to convert from string to numeric has this format
 
     destring originalstringdata, replace
 
@@ -562,7 +562,7 @@ There are two steps involved in labeling values for a factor variable. First def
 
     label define ethnicityl 1 "English,Welsh,Scottish,Northern Irish,British' 2 "Irish" 3 "Gypsy or Irish Traveller" 4"Anyother White background"
 
-here **ethnicity1** is a handle for this label definition and is followed by pairs of code and label.
+here **ethnicityl** is a handle for this label definition and is followed by pairs of code and label.
 
 You can check what label definitions exist in your data with `label dir`.
 
@@ -584,7 +584,7 @@ To check the range of factor variables you can use `inlist()`. For example
 
 As before we can now list to see the results:
 
-    list if foutofrange == 1
+    list if foutofrange ==  1
 
 ### Generating dummy binary variables for factors
 
@@ -823,6 +823,24 @@ From any date variable, you can extract the *month*, *day* and *year* elements w
 For example,
 
 gen yearalone = year(date1) gen dayalone = day(date1) gen monthalone = month(date1)
+
+# Exporting tables to Office or LaTeX format from scripts
+
+Dynamic reporting using `dyndoc` or `markstat` is a great way to work with Stata. However, not everyone wants to and there are times when it is useful to have a script that analyses your data and exports tables of results as you go.
+
+One of the simples ways to do this is to use `collect export` in your scripts after you run a routine. Suppose that you create a simple cross tabulation, for example
+
+    tabulate teacher class
+
+You can immediately export the result to excel with
+
+    collect export teacherclass.xls
+
+will create an Excel file with the results of tabulate. You can use .docx, .html, .tex and .pdf files (see the Stata documentation for the full list) as well as .xls(x).
+
+Unfortunately, it is not possible to append all your outputs to one file with `collect export` (it is allowed for some formats but not others), nor can you label the ouput easily.
+
+A more sophisticated method which allows you to label the exported content and collect all ouput in one document uses the `putdocx` or `putexcel`. Since this is outside the central topic of this guide (ie data management), an example do file that illustrates the process is provided in `putdocxexample.do`.
 
 # References
 

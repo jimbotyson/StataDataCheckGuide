@@ -774,7 +774,7 @@ ALI     2   1   history 55</code></pre>
 <p>You should also be aware that storing a value with <strong>more space</strong> than required can cause confusion. If you store for example the number <strong>7</strong> (ostensibly an integer) as a float, then the internal representation may actually be <strong>7.0000001</strong> or <strong>6.9999999</strong>. If you use a number with a boolean operator like this:</p>
 <pre><code>gen flag = 1 if myvar &lt;= 7</code></pre>
 <p>with myvar having type float, you risk a wrong result.</p>
-<p>The most basic command for type checking in Stata is <code>ds</code> with the option <code>detail</code>. This will return a list of variables in your data and their current storage types. For example:</p>
+<p>Another basic command for type checking in Stata is <code>ds</code> with the option <code>detail</code>. This will return a list of variables in your data and their current storage types. The output is substantially the same as <code>describe, replace</code>. For example:</p>
 <pre><code>. ds, detail
 
               storage   display    value
@@ -802,7 +802,7 @@ history         byte    %8.0g    </code></pre>
 <h3>Coerce to string or numeric</h3>
 <div id="destring-and-back-again" class="section level4">
 <h4>Destring and back again</h4>
-<p>Data may not always be read in to Stata correctly. If after checking you have a variable which should be numeric but is stored as a string, you have have to convert if. The command to convert from string to numeric has this format</p>
+<p>Data may not always be read in to Stata correctly. If after checking you have a variable which should be numeric but is stored as a string, you have to convert if. The command to convert from string to numeric has this format</p>
 <pre><code>destring originalstringdata, replace</code></pre>
 <p>The converse is achieved with <code>tostring</code>.</p>
 <pre><code>tostring originalnumericdata, generate(newstringdata)</code></pre>
@@ -912,7 +912,7 @@ foreach var of local continuous{
 <p>This is done with the Stata <code>label</code> command.</p>
 <p>There are two steps involved in labeling values for a factor variable. First define a set (we call it <em>ethnicityl</em> here) of label-code equivalences. Like this:</p>
 <pre><code>label define ethnicityl 1 &quot;English,Welsh,Scottish,Northern Irish,British&#39; 2 &quot;Irish&quot; 3 &quot;Gypsy or Irish Traveller&quot; 4&quot;Anyother White background&quot;</code></pre>
-<p>here <strong>ethnicity1</strong> is a handle for this label definition and is followed by pairs of code and label.</p>
+<p>here <strong>ethnicityl</strong> is a handle for this label definition and is followed by pairs of code and label.</p>
 <p>You can check what label definitions exist in your data with <code>label dir</code>.</p>
 <p>The next step is to apply <strong>ethnicityl</strong> to the values of some variable in our data:</p>
 <pre><code>label values myvars ethnicityl</code></pre>
@@ -927,7 +927,7 @@ gen foutofrange = 0
 
 replace foutofrange = 1 if !inlist(myfactorvar,1,2)</code></pre>
 <p>As before we can now list to see the results:</p>
-<pre><code>list if foutofrange == 1</code></pre>
+<pre><code>list if foutofrange ==  1</code></pre>
 </div>
 <div id="generating-dummy-binary-variables-for-factors" class="section level3">
 <h3>Generating dummy binary variables for factors</h3>
