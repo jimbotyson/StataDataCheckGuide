@@ -1,5 +1,5 @@
 webuse set https://www.ucl.ac.uk/~ccaajim/
-* webuse results, clear
+webuse results, clear
 
 putdocx begin
 putdocx paragraph, style(Title)
