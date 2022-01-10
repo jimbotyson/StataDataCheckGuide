@@ -3,10 +3,10 @@ title: "Data Preparation and Management with Stata"
 author: "Jim Tyson"
 date: "24/01/2020"
 output:
-  word_document:
-    toc: yes
   html_document:
     df_print: paged
+    toc: yes
+  word_document:
     toc: yes
   pdf_document:
     toc: yes
@@ -373,20 +373,17 @@ Consider this data:
 The data contains six variables. If we use `describe` we get:
 
 | variable name | type | format | label | variable label |
-|---------------|------|--------|-------|----------------|
-
-| Contains | data  |       |
-|----------|-------|-------|
-|          | obs:  | 30    |
-|          | vars: | 6     |
-|          | size: | 480   |
-|          |       |       |
-| surname  | str10 | %10s  |
-| sex      | byte  | %8.0g |
-| class    | byte  | %8.0g |
-| maths    | int   | %8.0g |
-| english  | byte  | %8.0g |
-| history  | byte  | %8.0g |
+|---------------|------|-------:|------:|----------------|
+| Contains      | data |        |       |                |
+|               | obs: | 30     |       |                |
+|               | vars:| 6      |       |                |
+|               | size: | 480   |       |                |
+| surname       | str10 | %10s  |       |                |
+| sex           | byte  | %8.0g |       |                |
+| class         | byte  | %8.0g |       |                |
+| maths         | int   | %8.0g |       |                |
+| english       | byte  | %8.0g |       |                |
+| history       | byte  | %8.0g |       |                |
 
 `Sorted by:`
 
