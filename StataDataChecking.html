@@ -225,6 +225,7 @@ pre code {
 <li><a href="#type-checking">Type checking</a>
 <ul>
 <li><a href="#coerce-to-string-or-numeric">Coerce to string or numeric</a></li>
+<li><a href="#coercing-to-integer">Coercing to integer</a></li>
 </ul></li>
 <li><a href="#range-checking">Range checking</a></li>
 <li><a href="#factor-variables">Factor variables</a>
@@ -312,19 +313,18 @@ pre code {
 <p>Cleaned data sets should only be stored temporarily - arguably not at all. The raw data file should be treated as read only. Your initiation script might clean and transform your data, producing a data set fit for analysis. Ideally this data set should not be saved - you call the analysis script over the data set in memory after its transformation. You can call a do file from <strong>within</strong> an do file script using a command like</p>
 <pre><code>do myscriptfilename</code></pre>
 <p>but of course change the path and file name to match your set-up.</p>
-<p>A good alternative to creating and saving transformed data files locally is to use Stata’s <code>preserve</code> command before doing any data transformation and analysis (this snapshots the pre-transformation state of the data) and use <code>restore</code> after analysis (which will undo any transformations or alterations to the original data set).</p>
+</div>
+<div id="a-quick-note-on-preserve-and-restore" class="section level1">
+<h1>A quick note on <code>preserve</code> and <code>restore</code></h1>
+<p>A good alternative to creating and saving transformed data files locally is to use Stata’s <code>preserve</code> command before doing any data transformation and analysis (this snapshots the pre-transformation state of the data) and use <code>restore</code> after analysis.</p>
+<p>Some operations overwrite data in memory. Since we aim to always preserve original data, we do not want to overwrite data in memory and then write to file. Nor do we want a proliferation of modified data files.</p>
+<p>If we wish to make some <strong>temporary</strong> change to a data set, then we should use <strong><code>preserve</code></strong> and <strong><code>restore</code></strong>. <code>Preserve</code> takes a snapshot of the data set in its current state. We can then process the data in anyway we like and later use <code>restore</code> to return to the state in the snapshot.</p>
 <p>In some circumstances you may decide to create a file and use it temporarily. It is strongly recommended that you either:</p>
 <ol style="list-style-type: decimal">
 <li>delete the file after your analysis is complete (using the Stata <code>erase</code> command) and recreate it for any further analysis; or</li>
 <li>use a <strong>make</strong> utility<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a> for conditional execution of scripts.</li>
 </ol>
 <p>This conservative approach towards the raw data, and reluctance to create permanent files of processed data, is critical to the goal of reproducible research practices.</p>
-<p>In some circumstances you may also wish to have a folder of images, especially if you anticipate that an image or graph may be included in more than one report.</p>
-</div>
-<div id="a-quick-note-on-preserve-and-restore" class="section level1">
-<h1>A quick note on <code>preserve</code> and <code>restore</code></h1>
-<p>Some operations overwrite data in memory. Since we aim to always preserve original data, we do not want to overwrite data in memory and then write to file. Nor do we want a proliferation of modified data files.</p>
-<p>If we wish to make some <strong>temporary</strong> change to a data set, then we should use <strong><code>preserve</code></strong> and <strong><code>restore</code></strong>. <code>Preserve</code> takes a snapshot of the data set in its current state. We can then process the data in anyway we like and later use <code>restore</code> to return to the state in the snapshot.</p>
 </div>
 <div id="a-quick-note-on-capture-and-quietly" class="section level1">
 <h1>A quick note on <code>capture</code> and <code>quietly</code></h1>
@@ -447,12 +447,12 @@ CHULANI       a   </code></pre>
 <li>Cross field constraints hold;</li>
 <li>Values recorded are, within accepted limits, accurate;</li>
 <li>Data is complete within accepted limits and missing data is suitably coded;</li>
-<li>Data are internally consistent;</li>
+<li>Data are internally consistent.</li>
 </ol>
 </dd>
 </dl>
 <p>This is a more complex matter than making data tidy.</p>
-<p>In general having untidy data will make your analytical job more difficult and your processes less clear while having dirty data will compromise the quality of your analysis - however carefully carried out.</p>
+<p>In general having untidy data will make your analytical job more difficult and your processes less clear, while having dirty data will compromise the quality of your analysis - however carefully carried out.</p>
 </div>
 <div id="reshaping" class="section level2">
 <h2>Reshaping</h2>
@@ -510,7 +510,10 @@ ALI     2   1   history 55</code></pre>
 <h1>Check the data</h1>
 <p>A useful technique for a general check of the data that you can eyeball in the console involves a special form of the <code>describe</code> command.</p>
 <p>The procedure <strong>overwrites</strong> the data in memory and in your script you should precede this operation by a <code>preserve</code> command and follow it by <code>restore</code>.</p>
-<pre><code>describe, replace clear</code></pre>
+<pre><code>preserve
+describe, replace clear
+list
+restore</code></pre>
 <p>This replaces the data in memory with a summary report of information about the data set.</p>
 <p>Consider this data:</p>
 <table>
@@ -648,8 +651,8 @@ ALI     2   1   history 55</code></pre>
 </tr>
 </tbody>
 </table>
-<p>Sorted by:</p>
-<p>&gt; Note: Dataset has changed since last saved.</p>
+<p><code>Sorted by:</code></p>
+<p><code>&gt; Note: Dataset has changed since last saved.</code></p>
 <p>You can quickly check the variable names, types, labels and so on in this way. To get a summary of your variables use <code>list</code> after this describe operation.</p>
 <p>Remember that this operation <strong>overwrites the dataset in memory</strong>. You no longer have your original data in the workspace and to use your data you must re-load the file, or you must have preserved it and restored it.</p>
 <div id="data-type-and-variable-format" class="section level2">
@@ -687,8 +690,8 @@ ALI     2   1   history 55</code></pre>
 </tr>
 </tbody>
 </table>
-<p>Each of these has a default display format. Stata display begin with <code>%</code> followed by a number indicating the width, <code>.</code>, then the decimal precision and ususally <code>g</code> for general format or <code>f</code> for fixed format.</p>
-<p>For numbers, in general format, decimal places of a number will be displayed up to the value of width. In fixed format, the number of decimal values display is fixed by the number following <code>.</code> however wide the variable.</p>
+<p>Each of these has a default display format. Stata display begin with <code>%</code> followed by a number indicating the width, a stop (ie <code>.</code>), then the decimal precision and ususally <code>g</code> for general format or <code>f</code> for fixed format.</p>
+<p>For numbers, in general format, decimal places of a number will be displayed up to the value of width. In fixed format, the number of decimal values display is fixed by the number following `.` however wide the variable.</p>
 <table>
 <tbody>
 <tr class="odd">
@@ -797,7 +800,7 @@ sex             byte    %8.0g
 class           byte    %8.0g                 
 english         byte    %8.0g                 
 history         byte    %8.0g    </code></pre>
-<p>You should confirm that you understand why <strong>maths</strong> is not included in this list.</p>
+<p>(You should confirm that you understand why <strong>maths</strong> is not included in this list).</p>
 <p>You can also use <code>ds, has(format %8.0g)</code> (or indeed any format type) to check for variables with a specific format. You can now visually examine the type and format information for your variables for correctness.</p>
 <div id="coerce-to-string-or-numeric" class="section level3">
 <h3>Coerce to string or numeric</h3>
@@ -810,10 +813,16 @@ history         byte    %8.0g    </code></pre>
 <p>In each case you can either <strong>replace</strong> the original values in place, or <strong>generate</strong> a new variable to hold the new values.</p>
 </div>
 </div>
+<div id="coercing-to-integer" class="section level3">
+<h3>Coercing to integer</h3>
+<p>If you have a variable of type float and you wish to convert it to integer values, then assuming that rounding is appropriate you should generate a new variable of type integer with the following code:</p>
+<pre><code>gen int myvari = round(myvar)</code></pre>
+<p>where I have chosen <code>myvari</code> as the new variable name. As well as <code>round()</code>, you can use the functions <code>floor()</code> and <code>ceiling()</code>.</p>
+</div>
 </div>
 <div id="range-checking" class="section level2">
 <h2>Range checking</h2>
-<p>The strategy for range checking is to create a semaphore if any variable is not in range for any case.</p>
+<p>The strategy for range checking is to create a semaphore or alert variable if a value is not in range for any case.</p>
 <p>Consider the continuous variables in this example data</p>
 <table>
 <thead>
@@ -875,10 +884,10 @@ history         byte    %8.0g    </code></pre>
 </tr>
 </tbody>
 </table>
-<p>Suppose that we know that the scores <strong>maths, english</strong> and <strong>history</strong> are examinations scores out of 100. If any score is less than zero or more than 100, we will consider it out of range and we will have to find a strategy to deal with it.</p>
-<p>So we will write a do file to generate a new variable to act as our semaphore - <code>outofrange</code>, with a value zero for all cases. Then create a list of relevant variables (here the three continuous variables <strong>maths, english</strong> and <strong>history</strong>) and use a conditional replace statement to replace the zeros with 1 for values out of range.</p>
+<p>Suppose that we know that the scores <strong>maths</strong>, english** and <strong>history</strong> are examinations scores out of 100. If any score is less than zero or more than 100, we will consider it out of range and we will have to find a strategy to deal with it.</p>
+<p>So we will write a do file to generate a new variable to act as our semaphore - <code>outofrange</code> - with a value zero for all cases. Then create a list of relevant variables (here the three continuous variables <strong>maths, english</strong> and <strong>history</strong>) and use a conditional replace statement to replace the zeros with 1 for values out of range.</p>
 <p>We will exploit the inbuilt Stata function <strong>inrange()</strong> which has this syntax:</p>
-<p>inrange(myvar, minimum, maximum)</p>
+<p><code>inrange(myvar, minimum, maximum)</code></p>
 <p>This function returns true when <code>myvar</code> is between the minimum and maximum values. So the code might look like this:</p>
 <pre><code>capture drop outofrange
 
@@ -893,10 +902,9 @@ foreach var of local continuous{
 }</code></pre>
 <p>We use <code>capture</code> in the <code>drop</code> statement to ignore any error if <code>outofrange</code> does not yet exist (that is, for example, if we are running this routine for the first time).</p>
 <p>We can now use</p>
-<pre><code>list if outofrange ==1</code></pre>
+<pre><code>list if outofrange == 1</code></pre>
 <p>to examine any cases with values out of range.</p>
 <p>The question remains what you should <strong>do</strong> with these cases, but that is a theoretical matter. You must decide.</p>
-<p>You can use a similar method when dealing with missing data, dealt with below.</p>
 </div>
 <div id="factor-variables" class="section level2">
 <h2>Factor variables</h2>
@@ -920,7 +928,7 @@ foreach var of local continuous{
 </div>
 <div id="defining-and-managing-factors" class="section level3">
 <h3>Defining and managing factors</h3>
-<p>Stata, unlike R or SPSS, does not require that you <strong>define</strong> a variable as a factor or categorical variable. Rather it is when you run analysis that you will need to specify whether some variable should be treated as categorical and its levels transformed (on the fly) to indicators (‘dummy variables’).</p>
+<p>Stata (unlike for example R or SPSS) does not require that you <strong>define</strong> a variable as a factor or categorical variable. Rather it is when you run analysis that you will need to specify whether some variable should be treated as categorical and its levels transformed (on the fly) to indicators (‘dummy variables’).</p>
 <p>To check the range of factor variables you can use <code>inlist()</code>. For example</p>
 <pre><code>capture drop foutofrange
 
@@ -1091,32 +1099,107 @@ other</code></pre>
 </tbody>
 </table>
 <p>You can use a command like:</p>
-<p>replace myvar = .a if myvar == -99 replace myvar = .b if myvar == -98 replace myvar = .c if myvar == -97</p>
+<p><code>replace myvar = .a if myvar == -99 replace myvar = .b if myvar == -98 replace myvar = .c if myvar == -97</code></p>
 <p>and then apply a label set like</p>
-<p>label define formissing .a “MCAR” .b “MAR” .c “MNAR”</p>
+<p><code>label define formissing .a &quot;MCAR&quot; .b &quot;MAR&quot; .c &quot;MNAR&quot;</code></p>
 <p>and finally apply the set of labels <strong>formissing</strong> to your variable:</p>
-<p>label values myvar formissing</p>
+<p><code>label values myvar formissing</code></p>
 <p>This method works, but you will have to do it a single variable at a time (or use a foreach loop). Perhaps better is to use the command <code>mvdecode</code> like this</p>
-<p>mvdecode myvarone myvartwo, mv(-99 = .a  -98 = .b  -97 = .c)</p>
+<p><code>mvdecode myvarone myvartwo, mv(-99 = .a  -98 = .b  -97 = .c)</code></p>
 <p>So encoding two variables in one instruction. Indeed if your missing value code scheme is uniform across variables you can use the construct <strong>_all</strong> to simply apply the encoding to all variables in the data.</p>
-<p>mvencode _all, mv(-99 = .a  -98 = .b  -97 = .c)</p>
+<p><code>mvencode _all, mv(-99 = .a  -98 = .b  -97 = .c)</code></p>
 <p>While a few missing values may not critically impact on your analysis and may allow for simply dropping cases, it will be worthwhile thinking about how to encode missing values. Not only because incomplete data may require special handling, but also because data maybe missing for different reasons. Consider for example a survey that asks respondents for their date of birth: no answer is very different from an answer ‘unknown.’</p>
-<p>Supposing that you wish to exclude all missing values from some procedure (maybe a plot, for example), then you can use a comparison operator like</p>
-<p>if myvar &gt;= .</p>
+<p>Supposing that you wish to exclude all missing values from some procedure (maybe a plot, for example), then you can use an <code>if</code> condition with a comparison operator like</p>
+<p><code>if myvar &gt;= .</code></p>
 <div id="outliers" class="section level2">
 <h2>Outliers</h2>
 <p>We should remember that an outlier is not an error, nor even a ‘bad’ data point. There is no reason to suppose that one should always exclude outliers from analysis: to do so is a statistical decision. Moreover, automatic detection of outliers is inherently limited and crude.</p>
 <p>Let us assume for the moment Tukey’s 1977 characterisation of an outlier: a value beyond the whiskers, where the upper whisker is at <span class="math display">\[quartile \: 3 + 1.5\times{IQR}\]</span> and the lower is at <span class="math display">\[quartile \: 1 + 1.5\times{IQR}\]</span>.</p>
-<p>tabstat maths, statistics(p25 p50 p75 iqr) save</p>
-<p>matrix statsc=r(StatTotal)</p>
-<p>local p75 = statsc[3,1] local p25 = statsc[1,1] local IQR = statsc[4,1] disp <code>p75&#39;     disp</code>IQR’</p>
-<p>local upperwhisker = <code>p75&#39; + 1.5*</code>IQR’ local lowerwhisker = <code>p25&#39; - 1.5*</code>IQR’</p>
-<p>disp <code>upperwhisker&#39;     disp</code>lowerwhisker’</p>
-<p>list surname maths if maths &gt;= <code>upperwhisker&#39;     list surname maths if maths &lt;=</code>lowerwhisker’</p>
-<p>But it is very important not to rely on the output of this (or any other computation of extreme values) automatically. It is critical that you consider carefully what constitutes and extreme or otherwise curious value and decide what to do about them. Graphical approaches such as scatter and box plots are often more conducive to understanding the data.</p>
+<pre><code>tabstat maths, statistics(p25 p50 p75 iqr) save
+
+matrix statsc=r(StatTotal)
+
+local p75 = statsc[3,1]
+local p25 = statsc[1,1]
+local IQR = statsc[4,1] 
+
+
+disp &quot;`p75&#39;&quot;
+
+disp &quot;`IQR&#39;&quot;
+
+local upperwhisker = `p75&#39; + 1.5* `IQR&#39; 
+local lowerwhisker = `p25&#39; - 1.5* `IQR&#39;
+
+disp &quot;`upperwhisker&#39;&quot;
+disp &quot;`lowerwhisker&#39;&quot;
+
+list surname maths if maths &gt;= `upperwhisker&#39;
+list surname maths if maths &lt;= `lowerwhisker&#39;</code></pre>
+<p>But it is very important not to rely on the output of this (or any other computation of extreme values) automatically. It is critical that you consider carefully what constitutes an extreme or otherwise interesting value and decide what to do about them. Graphical approaches such as scatter and box plots are often more conducive to understanding the data.</p>
 <p>Notice also that this only detects univariate outliers - you can have combinations of values for a case that together make the case of interest or problematic and this procedure would not detect those.</p>
-<p>With small data samples and a bi-variate relationship, it can be useful to create a scatter plot, run a regression analysis and then examine the leverage against residuals plot. So,</p>
-<p>scattery x y reg y x gen id=_n lvr2plot, mlabel(id)</p>
+<p>With small data samples and a bi-variate relationship, it can be useful to create a scatter plot, run a regression analysis and then examine the leverage against residuals plot. So, imagining for a moment data with 30 rows like the following:</p>
+<table>
+<thead>
+<tr class="header">
+<th>surname</th>
+<th>sex</th>
+<th>class</th>
+<th>maths</th>
+<th>english</th>
+<th>history</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>ADAMS</td>
+<td>2</td>
+<td>1</td>
+<td>55</td>
+<td>2</td>
+<td>99</td>
+</tr>
+<tr class="even">
+<td>ALI</td>
+<td>2</td>
+<td>1</td>
+<td>52</td>
+<td>46</td>
+<td>35</td>
+</tr>
+<tr class="odd">
+<td>BAGAL</td>
+<td>1</td>
+<td>3</td>
+<td>51</td>
+<td>58</td>
+<td>55</td>
+</tr>
+<tr class="even">
+<td>BENJAMIN</td>
+<td>1</td>
+<td>2</td>
+<td>59</td>
+<td>70</td>
+<td>68</td>
+</tr>
+<tr class="odd">
+<td>BLAKEMORE</td>
+<td>2</td>
+<td>2</td>
+<td>56</td>
+<td>38</td>
+<td>40</td>
+</tr>
+</tbody>
+</table>
+<p>We can investigate any very influential points with this code:</p>
+<pre><code>scatter english history
+reg history english
+capture gen id=_n
+lvr2plot, mlabel(id)
+predict l, leverage
+hilo l  english history id, high show(5)</code></pre>
 <p>This allows us to consider any outliers and their effect.</p>
 </div>
 <div id="duplicates" class="section level2">
@@ -1126,8 +1209,8 @@ other</code></pre>
 <h2>Constraints I: uniqueness</h2>
 <p>The simplest uniqueness constraint can be illustrated by considering records that have a unique id - for example patient id in a clinical trial. However, uniqueness constraints can be complex: it may be some combination of values that must be unique.</p>
 <p>Look at <strong>contract</strong> in Stata help. <!-- amend results data to contain an id field with duplicates and check with contract surname --></p>
-<p>contract varlist if in weight , options</p>
-<p>contract replaces the dataset in memory with a new dataset consisting of all combinations of varlist that exist in the data and a new variable that contains the frequency of each combination.</p>
+<p><code>contract varlist if in weight , options</code></p>
+<p>contract replaces the dataset in memory with a new dataset consisting of all combinations of varlist that exist in the data and a new variable that contains the frequency of each combination. As usual with processes that replace data, you should probably wrap this in <code>preserve</code> and <code>restore</code>.</p>
 </div>
 <div id="constraints-ii-cross-value-constraints" class="section level2">
 <h2>Constraints II: cross value constraints</h2>
@@ -1203,14 +1286,14 @@ other</code></pre>
 </tbody>
 </table>
 <p>Suppose that you would like too calculate for each student a measure of their overall examination performance. We can calculate the average score as</p>
-<p>(maths + english + history)/3</p>
+<p><code>(maths + english + history)/3</code></p>
 <p>These sorts of summaries of data <strong>by case</strong> (rather than by variable) are better created with egen.</p>
 <p>First, creating the average examination score for each student.</p>
-<p>egen avxm = rowmean(maths english history)</p>
+<p><code>egen avxm = rowmean(maths english history)</code></p>
 <p>Now, use <strong>cut</strong> to break this into groups of scores. I have chosen groups as from zero to less than 50, from 50 to less than 60 and from 60 and above. The <code>icodes</code> keyword creates numeric code names (starting at 0) for each resulting group:</p>
-<p>egen stream = cut(avxm), at(0,50,60,101) icodes</p>
+<p><code>egen stream = cut(avxm), at(0,50,60,101) icodes</code></p>
 <p>To check that the result is correct we can run this line:</p>
-<p>table stream, contents(min avxm max avxm)</p>
+<p><code>table stream, contents(min avxm max avxm)</code></p>
 <p>which will show us the lowest and highest data points in each group for our data.</p>
 <table>
 <thead>
@@ -1245,18 +1328,21 @@ other</code></pre>
 <p>Stata dates are <strong>elapsed dates</strong> with a reference date <strong>0</strong> of January 1, 1960. So, dates are represented internally as integers counting back or forward from this date.</p>
 <p>Any other true date representation is a formatting of this representation.</p>
 <p>This means that data you import into Stata which might look like, for example</p>
-<p>20-12-2022</p>
+<p><code>20-12-2022</code></p>
 <p>may not be correctly recognised as a date by Stata.</p>
 <p>There are Stata functions to convert dates to elapsed dates and to format dates.</p>
 <p>Let’s imagine a file of data that looks like this:</p>
-<p>dateone datetwo 01-01-2000 01-02-2000 02-03-2001 02-03-2005 01-01-2000 01-01-1960</p>
+<pre><code>dateone          datetwo
+01-01-2000       01-01-2000
+03-02-2001       03-02-2005
+01-01-2000       01-01-1960</code></pre>
 <p>First, I will assume that the data are in two columns of a table in a single Excel worksheet and import them with this command:</p>
-<p>import excel <a href="https://www.ucl.ac.uk/~ccaajim/datesstataexample.xlsx" class="uri">https://www.ucl.ac.uk/~ccaajim/datesstataexample.xlsx</a>, firstrow</p>
+<p><code>import excel https://www.ucl.ac.uk/~ccaajim/datesstataexample.xlsx, firstrow</code></p>
 <p>(You can use this command if you want to grab this small sheet from my website).</p>
 <p>Now, how has Stata recognised the data? Here is the output of <code>desc</code></p>
 <!-- ![Stata output showing dates imported from Excel file](images/datesxls-01.PNG "Stata output showing dates imported from Excel file") -->
 <p>The display format And now, let’s try some simple mathematics with these dates:</p>
-<p>gen interval = datetwo - dateone</p>
+<p><code>gen interval = datetwo - dateone</code></p>
 <p>Stat creates a variable of type <code>float</code>, with format <code>%9.0g</code>.</p>
 <!-- ![Intervals in days calculated from dates](images/intervalsxl.png "Calculation of intervals from Excel formatted dates") -->
 <p>Since, this interval is expressed in elapsed days, we can convert to years by dividing by 365.25</p>
@@ -1265,7 +1351,7 @@ other</code></pre>
 <p>Stata will convert many different string types to dates. The command is <code>date</code>. For example, suppose that we have a variable idate with a single row</p>
 <p>Jan, 31, 2001</p>
 <p>we can convert this with</p>
-<p>gen newidate = date(idate, “MDY”)</p>
+<pre><code>gen newidate = date(idate, &quot;MDY&quot;)</code></pre>
 <p>This will generate a float that is the elapsed date for January 31st, 2001.</p>
 <p>The string in quotes in <code>date()</code> is called the mask. It is used to specify in what order the <em>month</em>, <em>day</em> and <em>year</em> elements occur in the input string.</p>
 </div>
@@ -1273,17 +1359,22 @@ other</code></pre>
 <h2>Extracting parts of dates</h2>
 <p>From any date variable, you can extract the <em>month</em>, <em>day</em> and <em>year</em> elements with the functions <code>month(_date variable_)</code>,<code>day(_date variable_)</code> and <code>year(_year variable_)</code>.</p>
 <p>For example,</p>
-<p>gen yearalone = year(date1) gen dayalone = day(date1) gen monthalone = month(date1)</p>
+<p><code>gen yearalone = year(date1)</code></p>
+<p><code>gen dayalone = day(date1)</code></p>
+<p><code>gen monthalone = month(date1)</code></p>
 </div>
 </div>
 <div id="exporting-tables-to-office-or-latex-format-from-scripts" class="section level1">
 <h1>Exporting tables to Office or LaTeX format from scripts</h1>
 <p>Dynamic reporting using <code>dyndoc</code> or <code>markstat</code> is a great way to work with Stata. However, not everyone wants to take on the whole workflow of producing documents programmatically, it is useful to have a script that analyses your data and exports tables of results as you go.</p>
 <p>One of the simplest ways to do this is to use <code>collect export</code> in your scripts after you run a routine. Suppose that you create a simple cross tabulation, for example</p>
-<pre><code>tabulate teacher class</code></pre>
+<pre><code>table teacher class</code></pre>
 <p>You can immediately export the result to excel with</p>
 <pre><code>collect export teacherclass.xls</code></pre>
-<p>will create an Excel file with the results of tabulate. You can use .docx, .html, .tex and .pdf files (see the Stata documentation for the full list) as well as .xls(x).</p>
+<p>or</p>
+<pre><code>collect export teacherclass.tex, tableonly</code></pre>
+<p>The option <code>tableonly</code> prevents the tex output including a full document environment, restricting it to the <code>tabular</code> float code.</p>
+<p>So this will create an Excel or tex file with the results of table. You can use .docx, .html, and .pdf files (see the Stata documentation for the full list) as well as .xls(x) and .tex.</p>
 <p>Unfortunately, it is not possible to append all your outputs to one file with <code>collect export</code> (it is allowed for some formats but not others), nor can you label the ouput easily.</p>
 <p>A more sophisticated method which allows you to label the exported content and collect all ouput in one document uses the <code>putdocx</code> or <code>putexcel</code>. Since this is outside the central topic of this guide (ie data management), an example do file that illustrates the process is provided in <code>putdocxexample.do</code>.</p>
 </div>
