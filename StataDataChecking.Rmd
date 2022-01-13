@@ -119,18 +119,19 @@ Return codes from `capture` can also be used to create complex branching behavio
 
 The `quietly` keyword prevents the command following sending output to the console. We very often just accept Stata's default output when we run commands, but this can lead to the display of a lot of screen-lines that we don't really want to see. Using `quietly` either on individual lines or with `{}` for scope, allows us to run a process without viewing all the output and then perhaps using `disp` to show selective results. Thus:
 
-    `quietly summarize maths, detail
-    disp r(kurtosis)
-    `
-
+```
+quietly summarize maths, detail
+disp r(kurtosis)
+```
 or
 
-    `quietly {
-    regress history maths
-    predict resid, resid
-    }
-    summarize resid
-    `
+```
+quietly {
+         regress history maths
+         predict resid, resid
+        }
+summarize resid
+```
 
 Sometimes you want to see all of the output in the console and sometimes you don't. It's a good idea to get more selective with `quietly`.
 
