@@ -80,6 +80,27 @@ Cleaned data sets should only be stored temporarily - arguably not at all. The r
 
 but of course change the path and file name to match your set-up.
 
+# Session logs
+
+For your own debugging, code review and record keeping purposes, you should also log your sessions. You can include a `log using` command at the beginning of your scripts. The log of your session can be in either SCML (a Stata specific markup language) which is viewed with the Stata `view` command, or plain text which can be viewed with any text editing package, including the Stata do file editor.
+
+There is a second kind of log file: the command log. This log contains **only** the commands issued in a session and no results. It is always in plain text format and this makes it useful for quick conversion to a rough and ready **do** script.
+
+Log files should ideally have their own folder and a consistent file name-scheme. If you wish to create logs that are automatically named with the date you can use a command like this:
+
+    log using "$S_DATE.log", append
+
+or
+
+    cmdlog using "commands $S_DATE.log", append
+
+I have used the **append** option. This will generate a warning if the file mentioned does not yet exist, but the log will still be created.
+
+Include lines to close logs in your scripts.
+
+    log close
+    cmdlog close
+
 # A quick note on `preserve` and `restore`
 
 A good alternative to creating and saving transformed data files locally is to use Stata's `preserve` command before doing any data transformation and analysis (this snapshots the pre-transformation state of the data) and use `restore` after analysis.
@@ -119,42 +140,31 @@ Return codes from `capture` can also be used to create complex branching behavio
 
 The `quietly` keyword prevents the command following sending output to the console. We very often just accept Stata's default output when we run commands, but this can lead to the display of a lot of screen-lines that we don't really want to see. Using `quietly` either on individual lines or with `{}` for scope, allows us to run a process without viewing all the output and then perhaps using `disp` to show selective results. Thus:
 
-```
-quietly summarize maths, detail
-disp r(kurtosis)
-```
+    quietly summarize maths, detail
+    disp r(kurtosis)
+
 or
 
-```
-quietly {
-         regress history maths
-         predict resid, resid
-        }
-summarize resid
-```
+    quietly {
+             regress history maths
+             predict resid, resid
+            }
+    summarize resid
 
 Sometimes you want to see all of the output in the console and sometimes you don't. It's a good idea to get more selective with `quietly`.
 
-## Session logs
+## Set graphics off
 
-For your own debugging, code review and record keeping purposes, you should also log your sessions. You can include a `log using` command at the beginning of your scripts. The log of your session can be in either SCML (a Stata specific markup language) which is viewed with the Stata `view` command, or plain text which can be viewed with any text editing package, including the Stata do file editor.
+When you use do files to automate your analysis, you will soon start producing your visualisations inscripts and exporting them to disk: like ths:
 
-There is a second kind of log file: the command log. This log contains **only** the commands issued in a session and no results. It is always in plain text format and this makes it useful for quick conversion to a rough and ready **do** script.
+    scatter english history, msymbol(oh) title("History and English") caption("A plot of the regression of History against English") ytitle("History") xtitle("English")
+    graph export scattereh.png
 
-Log files should ideally have their own folder and a consistent file name-scheme. If you wish to create logs that are automatically named with the date you can use a command like this:
+If you produce these graphs from your do file, quietly will not surpress the creation of the graph window displaying the plot. Since you do not wan to see each plot as it is produced, you can use
 
-    log using "$S_DATE.log", append
+    set graphics off
 
-or
-
-    cmdlog using "commands $S_DATE.log", append
-
-I have used the **append** option. This will generate a warning if the file mentioned does not yet exist, but the log will still be created.
-
-Include lines to close logs in your scripts.
-
-    log close
-    cmdlog close
+before the section of your script that produces the visualisations. You will need to `set graphics on` if you wish to begin producing graph windows again.
 
 # Reading your data
 
@@ -373,18 +383,18 @@ Consider this data:
 
 The data contains six variables. If we use `describe` we get:
 
-| variable name | type | format | label | variable label |
-|---------------|------|-------:|------:|----------------|
-| Contains      | data |        |       |                |
-|               | obs: | 30     |       |                |
-|               | vars:| 6      |       |                |
-|               | size: | 480   |       |                |
-| surname       | str10 | %10s  |       |                |
-| sex           | byte  | %8.0g |       |                |
-| class         | byte  | %8.0g |       |                |
-| maths         | int   | %8.0g |       |                |
-| english       | byte  | %8.0g |       |                |
-| history       | byte  | %8.0g |       |                |
+| variable name | type  | format | label | variable label |
+|---------------|-------|-------:|------:|----------------|
+| Contains      | data  |        |       |                |
+|               | obs:  |     30 |       |                |
+|               | vars: |      6 |       |                |
+|               | size: |    480 |       |                |
+| surname       | str10 |   %10s |       |                |
+| sex           | byte  |  %8.0g |       |                |
+| class         | byte  |  %8.0g |       |                |
+| maths         | int   |  %8.0g |       |                |
+| english       | byte  |  %8.0g |       |                |
+| history       | byte  |  %8.0g |       |                |
 
 `Sorted by:`
 
