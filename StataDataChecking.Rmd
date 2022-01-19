@@ -873,7 +873,7 @@ For example,
 
 # Exporting tables to Office or LaTeX format from scripts
 
-Dynamic reporting using `dyndoc` or `markstat` is a great way to work with Stata. However, not everyone wants to take on the whole workflow of producing documents programmatically, it is useful to have a script that analyses your data and exports tables of results as you go.
+Dynamic reporting using `dyndoc` or `markstat` is a great way to work with Stata. However, not everyone wants to take on the whole workflow of producing documents programmatically and yet it is useful to have a script that analyses your data and exports tables of results as you go.
 
 One of the simplest ways to do this is to use `collect export` in your scripts after you run a routine. Suppose that you create a simple cross tabulation, for example
 
@@ -889,7 +889,7 @@ or
 
 The option `tableonly` prevents the tex output including a full document environment, restricting it to the `tabular` float code.
 
-So this will create an Excel or tex file with the results of table. You can use .docx, .html, and .pdf files (see the Stata documentation for the full list) as well as .xls(x) and .tex.
+So this will create an Excel or tex file with the results of table. You can use .docx, .html, and .pdf file extensions (see the Stata documentation for the full list) as well as .xls(x) and .tex.
 
 Unfortunately, it is not possible to append all your outputs to one file with `collect export` (it is allowed for some formats but not others), nor can you label the ouput easily.
 
