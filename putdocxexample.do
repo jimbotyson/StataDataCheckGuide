@@ -2,17 +2,18 @@ webuse set https://www.ucl.ac.uk/~ccaajim/
 webuse results, clear
 
 putdocx begin
+* title for word document
 putdocx paragraph, style(Title)
 putdocx text ("Report on Maths Scores")
-* Next we add a heading for the description of our data:
+* Next we add a description of our data:
 putdocx paragraph, style(Heading1)
 putdocx text ("Introduction to the data")
-* Now we are ready to add a standard paragraph where we cite the source of our dataset.
 putdocx paragraph
 putdocx text ("We have data on examination scores out of 100 for 30 students from three classes.")
 putdocx paragraph
 putdocx text ("Fifteen of the students were male and fifteen female.")
-putdocx save examinationscores
+* the nextline saves the word document we have created so far - the replace option will overwrite any existing document with this name.
+putdocx save examinationscores, replace
 
 * Add more content
 putdocx begin
