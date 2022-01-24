@@ -3,12 +3,12 @@ title: "Data Preparation and Management with Stata"
 author: "Jim Tyson"
 date: "24/01/2020"
 output:
-  html_document:
-    df_print: paged
+  pdf_document:
     toc: yes
   word_document:
     toc: yes
-  pdf_document:
+  html_document:
+    df_print: paged
     toc: yes
 bibliography: references.bib
 ---
@@ -155,12 +155,13 @@ Sometimes you want to see all of the output in the console and sometimes you don
 
 ## Set graphics off
 
-When you use do files to automate your analysis, you will soon start producing your visualisations inscripts and exporting them to disk: like ths:
+When you use do files to automate your analysis, you will soon start producing your visualisations in scripts and exporting them to disk: like ths:
 
-    scatter english history, msymbol(oh) title("History and English") caption("A plot of the regression of History against English") ytitle("History") xtitle("English")
+    scatter english history, msymbol(oh) title("History and English") ///
+    caption("A plot of the regression of History against English") ytitle("History") xtitle("English")
     graph export scattereh.png
 
-If you produce these graphs from your do file, quietly will not surpress the creation of the graph window displaying the plot. Since you do not wan to see each plot as it is produced, you can use
+If you produce these graphs from your do file, quietly will not surpress the creation of the graph window displaying the plot. Since you do not want to see each plot as it is produced, you can use
 
     set graphics off
 
@@ -434,7 +435,7 @@ For numbers, in general format, decimal places of a number will be displayed up 
 
 ## Type checking
 
-A type or data type is how the computer system or programming language knows how to treat the data. So, a different set of computations are possible with integers than with text data. Ensuring that data is recognised as the correct type helps make for safe coding.
+A **type** or **data type** is how the computer system or programming language knows how to treat the data. So, a different set of computations are possible with integers than with text data. Ensuring that data is recognised as the correct type helps make for safe coding.
 
 The division between numeric data and string data (sometimes called text or character data) is one of the most obvious and fundamental. Consider that although a telephone number is a string of characters that may look like a number, we should not take the square root of someone's telephone number or calculate 'average telephone number' from our data.
 
@@ -693,7 +694,7 @@ Supposing that you wish to exclude all missing values from some procedure (maybe
 
 We should remember that an outlier is not an error, nor even a 'bad' data point. There is no reason to suppose that one should always exclude outliers from analysis: to do so is a statistical decision. Moreover, automatic detection of outliers is inherently limited and crude.
 
-Let us assume for the moment Tukey's 1977 characterisation of an outlier: a value beyond the whiskers, where the upper whisker is at $$quartile \: 3 + 1.5\times{IQR}$$ and the lower is at $$quartile \: 1 + 1.5\times{IQR}$$.
+Let us assume for the moment Tukey's 1977 characterisation of an outlier (@tukey1977a ) : a value beyond the whiskers, where the upper whisker is at $$quartile \: 3 + 1.5\times{IQR}$$ and the lower is at $$quartile \: 1 + 1.5\times{IQR}$$.
 
     tabstat maths, statistics(p25 p50 p75 iqr) save
 
