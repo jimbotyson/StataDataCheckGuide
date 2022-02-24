@@ -3,12 +3,12 @@ title: "Data Preparation and Management with Stata"
 author: "Jim Tyson"
 date: "24/01/2020"
 output:
-  pdf_document:
+  html_document:
+    df_print: paged
     toc: yes
   word_document:
     toc: yes
-  html_document:
-    df_print: paged
+  pdf_document:
     toc: yes
 bibliography: references.bib
 ---
@@ -52,6 +52,8 @@ This is my contribution to saving other data analysts from that pain.
 -   well managed data is easier to share.
 
 In what follows I assume that you will *try to script everything* but will, like me, fall short. If you work by writing scripts in **do files** then you work is easy to adapt, easy to correct and easy to reproduce [^1].
+
+[^1]: [If you are not familiar with do files, you will need to read this help page before going any further](https://www.stata.com/manuals13/gsw13.pdf)
 
 However the Stata 'do file language' is not a conventional programming language and you cannot always check and then conditionally manipulate data in the way that you might using Perl, Python or R. But the best is the enemy of the good.
 
@@ -113,6 +115,8 @@ In some circumstances you may decide to create a file and use it temporarily. It
 
 1.  delete the file after your analysis is complete (using the Stata `erase` command) and recreate it for any further analysis; or
 2.  use a **make** utility[^2] for conditional execution of scripts.
+
+[^2]: This is not the place to describe the use of makefiles, but the topic is eminently googleable. A good reference for general use is @baker2020
 
 This conservative approach towards the raw data, and reluctance to create permanent files of processed data, is critical to the goal of reproducible research practices.
 
@@ -441,7 +445,7 @@ The division between numeric data and string data (sometimes called text or char
 
 Stata has two non-numeric data types: short string and long string. The short string (probably the most common string type) is limited to 2054 characters. The long string can hold up to 2 billion characters.
 
-In variable definition, Stata uses the prefix **str\#** (where **\#** is a number representing length) for short strings and **strL** for long strings.
+In variable definition, Stata uses the prefix **str#** (where **\#** is a number representing length) for short strings and **strL** for long strings.
 
 Stata has five different numeric types each suitable for storing data elements of different size. They are
 
@@ -850,7 +854,7 @@ Since, this interval is expressed in elapsed days, we can convert to years by di
 
 Stata will convert many different string types to dates. The command is `date`. For example, suppose that we have a variable idate with a single row
 
-Jan, 31, 2001
+    Jan, 31, 2001
 
 we can convert this with
 
@@ -872,32 +876,28 @@ For example,
 
 `gen monthalone = month(date1)`
 
-# Exporting tables to Office or LaTeX format from scripts
+## Formatting dates
 
-Dynamic reporting using `dyndoc` or `markstat` is a great way to work with Stata. However, not everyone wants to take on the whole workflow of producing documents programmatically and yet it is useful to have a script that analyses your data and exports tables of results as you go.
+Stata has a command to format dates `%td`. This is used with the `format` command:
 
-One of the simplest ways to do this is to use `collect export` in your scripts after you run a routine. Suppose that you create a simple cross tabulation, for example
+    format datedata %td
 
-    table teacher class
+where **datedata** is some recognised date. Datedata can be a list of variables.
 
-You can immediately export the result to excel with
+## Date mathematics
 
-    collect export teacherclass.xls
+Stata has a funciton **td()** that allows literal dates to be understood as Stata elapsed dates. We can combine this with the function **datediff** to calculate durations:
 
-or
+    display datediff(td(1January2000), td(1January2001), "month")
+    
+gives the result 12.  We can combine this with the function **today()** like so
 
-    collect export teacherclass.tex, tableonly
+    display datediff(td(1Mar2020), today(), "month")
+    
+and we can calculate fractional durations
 
-The option `tableonly` prevents the tex output including a full document environment, restricting it to the `tabular` float code.
-
-So this will create an Excel or tex file with the results of table. You can use .docx, .html, and .pdf file extensions (see the Stata documentation for the full list) as well as .xls(x) and .tex.
-
-Unfortunately, it is not possible to append all your outputs to one file with `collect export` (it is allowed for some formats but not others), nor can you label the ouput easily.
-
-A more sophisticated method which allows you to label the exported content and collect all ouput in one document uses the `putdocx` or `putexcel`. Since this is outside the central topic of this guide (ie data management), an example do file that illustrates the process is provided in `putdocxexample.do`.
+    display datediff_frac(td(1Mar2020), today(), "month")
+    
+More detail on date manipulation and calculation (including formatting) can be found using **help dates**.
 
 # References
-
-[^1]: [If you are not familiar with do files, you will need to read this help page before going any further](https://www.stata.com/manuals13/gsw13.pdf)
-
-[^2]: This is not the place to describe the use of makefiles, but the topic is eminently googleable. A good reference for general use is @baker2020
