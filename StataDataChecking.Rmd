@@ -67,6 +67,12 @@ Most projects benefit from having a consistent folder structure. I often have a 
 4.  reports - if possible dynamic markdown documents;
 5.  images.
 
+<a name="myfootnote1">1</a>: The most useful ancillary skill sets that I would recommend to any Stata user are (in no particular order):
+•	(SQL)[https://www.tutorialspoint.com/sql/index.htm]
+•	(Using gnu make) [https://makefiletutorial.com/#getting-started]
+•	(Simple bash data manipulation)[https://www.ucl.ac.uk/~ccaajim/unix-further-manual.docx https://ryanstutorials.net/bash-scripting-tutorial/].
+
+
 **The raw data files are read only.**
 
 The raw data can be in a number of formats. If possible a plain text delimited format - such as CSV - is preferred. A plain text format avoids a number of issues that can make data cleaning and set up unnecessarily complicated:
