@@ -62,12 +62,12 @@ However the Stata 'do file language' is not a conventional programming language 
 Most projects benefit from having a consistent folder structure. I often have a structure like this:
 
 1.  data if this is stored locally;
-2.  scripts: initiation scripts - the data reading, housekeeping and cleaning scripts; analysis scripts - visualising, estimating, modelling;
+2.  scripts[^1]: initiation scripts - the data reading, housekeeping and cleaning scripts; analysis scripts - visualising, estimating, modelling;
 3.  logs;
 4.  reports - if possible dynamic markdown documents;
 5.  images.
 
-<a name="myfootnote1">1</a>: The most useful ancillary skill sets that I would recommend to any Stata user are (in no particular order):
+[^1]:The most useful ancillary skill sets that I would recommend to any Stata user are (in no particular order):
 •	(SQL)[https://www.tutorialspoint.com/sql/index.htm]
 •	(Using gnu make) [https://makefiletutorial.com/#getting-started]
 •	(Simple bash data manipulation)[https://www.ucl.ac.uk/~ccaajim/unix-further-manual.docx https://ryanstutorials.net/bash-scripting-tutorial/].
